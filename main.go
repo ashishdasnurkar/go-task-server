@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -18,6 +17,7 @@ func main() {
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/sync", syncTasks).Methods("POST")
 
+	fmt.Println("Server running on port 8080...")
 	http.ListenAndServe("localhost:8080", router)
 }
 
@@ -27,18 +27,16 @@ func syncTasks(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Reading body error: ", err)
 	}
 	fmt.Println(string(reqBody))
-	taskArr, err := base64.StdEncoding.DecodeString(string(reqBody))
-	if err != nil {
-		log.Fatal("Reading body error: ", err)
-	}
 
 	var taskObj TaskType
-	err = proto.Unmarshal(taskArr, &taskObj)
+	err = proto.Unmarshal(reqBody, &taskObj)
 	if err != nil {
 		log.Fatal("Unmarshaling error: ", err)
 	}
 
 	fmt.Println(taskObj)
+
+	w.Write([]byte("Syncing Tasks"))
 }
 
 func home(w http.ResponseWriter, r *http.Request) {

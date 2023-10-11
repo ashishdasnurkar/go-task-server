@@ -28,13 +28,13 @@ func syncTasks(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(string(reqBody))
 
-	var taskObj TaskType
-	err = proto.Unmarshal(reqBody, &taskObj)
+	var taskList TaskList
+	err = proto.Unmarshal(reqBody, &taskList)
 	if err != nil {
 		log.Fatal("Unmarshaling error: ", err)
 	}
 
-	fmt.Println(taskObj)
+	fmt.Printf("%+v", taskList)
 
 	w.Write([]byte("Syncing Tasks"))
 }
